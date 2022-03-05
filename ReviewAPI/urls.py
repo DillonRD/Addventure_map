@@ -1,7 +1,7 @@
 from django.urls import path
-from .views import FetchUsersView, CreateUserView, LoginUserView, DeleteUserView, LogoutUserView, UpdateUserView
+from .views import FetchReviewsView, CreateReviewView
 
 urlpatterns = [
-    path('reviews', FetchReviewsView.as_view()),
-    path('create', CreateReviewView.as_view()),
+    path('', FetchReviewsView.as_view()),
+    path('create', CreateReviewView.as_view())
 ]

@@ -25,14 +25,13 @@ DROP TABLE IF EXISTS `review`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `review` (
-  `review_id` int NOT NULL,
+  `review_id` INTEGER PRIMARY KEY AUTOINCREMENT,
   `user_id` int NOT NULL,
   `location_id` int NOT NULL,
   `review_image_id` int DEFAULT NULL,
   `date_post` date NOT NULL,
   `reason` varchar(300) NOT NULL,
-  `rating` decimal(1,1) NOT NULL DEFAULT '0.0',
-  PRIMARY KEY (`review_id`)
+  `rating` decimal(1,1) NOT NULL DEFAULT '0.0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

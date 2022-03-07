@@ -40,7 +40,8 @@ class GetAccountSerializer(serializers.ModelSerializer):
     review = GetReviewSerializer(read_only=True, many=True)
     class Meta:
         model = User
-        fields = ('id', 'username', 'password', 'firstname', 'lastname', 'dateOfBirth', 'phone', 'email', 'isAdmin', 'post', 'review')
+        depth = 1
+        fields = ('id', 'username', 'password', 'firstname', 'lastname', 'dateOfBirth', 'phone', 'email', 'isAdmin', 'posts', 'review')
         depth = 1
 
 class DeleteUserSerializer(serializers.ModelSerializer):

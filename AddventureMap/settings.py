@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'LoginAPI.apps.LoginAPIConfig',
     'ReviewAPI.apps.ReviewAPIConfig',
+    'AdminAPI.apps.AdminAPIConfig',
+    'drf_multiple_model',
     'rest_framework'
 ]
 

@@ -8,7 +8,13 @@ class GetPostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ('id', 'activity', 'location', 'user', 'photo', 'created', 'updated', 'likes', 'text')
 
-class DeletePostSerializer(serializers.ModelSerializer):
+        
+class UserPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ('id', 'password')
+        fields = ('photo', 'likes', 'text')
+        
+class CreatePostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ('photo', 'text')

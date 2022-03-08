@@ -20,5 +20,6 @@ urlpatterns = [
     path('admin2/', admin.site.urls),
     path('admin/', include('AdminAPI.urls')),
     path('login/', include('LoginAPI.urls')),
-    path('adventure-map/review/', include('ReviewAPI.urls'))
+    path('adventure-map/review/', include('ReviewAPI.urls')),
+    path('post/', include('PostAPI.urls'))
 ]

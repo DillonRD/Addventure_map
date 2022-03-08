@@ -21,11 +21,6 @@ class GetReviewSerializer(serializers.ModelSerializer):
         model = Review
         fields = ('id', 'activity', 'location', 'user', 'photo', 'created', 'updated', 'rating', 'tex')
 
-class DeleteReviewSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Review
-        fields = ('id', 'password')
-
 ######################## USER ########################################
 class GetUserSerializer(serializers.ModelSerializer):
     posts = GetPostSerializer(read_only=True, many=True)
@@ -43,12 +38,6 @@ class GetAccountSerializer(serializers.ModelSerializer):
         depth = 1
         fields = ('id', 'username', 'password', 'firstname', 'lastname', 'dateOfBirth', 'phone', 'email', 'isAdmin', 'posts', 'review')
         depth = 1
-
-class DeleteUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('id', 'username')
-
 
 class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:

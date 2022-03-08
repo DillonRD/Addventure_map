@@ -5,10 +5,10 @@ from .models import Review
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
-        fields = ('user_id', 'location_id', 'review_image_id', 'date_post', 'reason', 'rating')
+        fields = ('photo', 'rating', 'text')
 
 
 class FetchReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
-        fields = ('review_id', 'user_id', 'location_id', 'review_image_id', 'date_post', 'reason', 'rating')
+        fields = ('id', 'activity', 'location', 'user', 'photo', 'created', 'updated', 'rating', 'text')

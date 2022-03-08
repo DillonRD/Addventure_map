@@ -14,7 +14,7 @@ class FetchReviewsView(APIView):
         #if self.request.session.get('session_token') is None:
             #return Response("Error: No session token", status.HTTP_401_UNAUTHORIZED)
 
-        queryset = Review.objects.filter(user_id=user_id)
+        queryset = Review.objects.filter(user=user_id)
         reviews = FetchReviewSerializer(queryset, many=True).data
         return Response(reviews, status.HTTP_200_OK)
 
@@ -29,16 +29,16 @@ class CreateReviewView(APIView):
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
-            user_id = serializer.data.get('user_id')
-            location_id = serializer.data.get('location_id')
-            review_image_id = serializer.data.get('review_image_id')
-            date_post = serializer.data.get('date_post')
-            reason = serializer.data.get('reason')
+            activity = self.request.session.get('activity')
+            location = self.request.session.get('location')
+            user = self.request.session.get('user')
+            photo = serializer.data.get('photo')
             rating = serializer.data.get('rating')
+            text = serializer.data.get('text')
 
-            review = Review(user_id=user_id, location_id=location_id, review_image_id=review_image_id, date_post=date_post, reason=reason, rating=rating)
+            review = Review(activity=activity, location=location, user=user, photo=photo, rating=rating, text=text)
             review.save()
-            return Response(ReviewSerializer(review).data, status.HTTP_201_CREATED)
+            return Response(FetchReviewSerializer(review).data, status.HTTP_201_CREATED)
 
 
 class DeleteReviewView(APIView):
@@ -48,7 +48,7 @@ class DeleteReviewView(APIView):
             #return Response("Error: No session token", status.HTTP_401_UNAUTHORIZED)
 
         try:
-            review = Review.objects.get(review_id=review_id)
+            review = Review.objects.get(id=review_id)
         except Review.DoesNotExist:
             return Response("Review does not exist", status.HTTP_404_NOT_FOUND)
 
@@ -66,34 +66,22 @@ class UpdateReviewView(APIView):
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
-            user_id = serializer.data.get('user_id')
-            location_id = serializer.data.get('location_id')
-            review_image_id = serializer.data.get('review_image_id')
-            date_post = serializer.data.get('date_post')
-            reason = serializer.data.get('reason')
+            photo = serializer.data.get('photo')
             rating = serializer.data.get('rating')
+            text = serializer.data.get('text')
 
-            review = Review.objects.get(review_id=review_id)
+            review = Review.objects.get(id=review_id)
             fieldsToUpdate = []
 
-            if user_id != review.user_id:
-                review.user_id = user_id
-                fieldsToUpdate.append('user_id')
-            if location_id != review.location_id:
-                review.location_id = location_id
-                fieldsToUpdate.append('location_id')
-            if review_image_id != review.review_image_id:
-                review.review_image_id = review_image_id
-                fieldsToUpdate.append('review_image_id')
-            if date_post != review.date_post:
-                review.date_post = date_post
-                fieldsToUpdate.append('date_post')
-            if reason != review.reason:
-                review.reason = reason
-                fieldsToUpdate.append('reason')
+            if photo != review.photo:
+                review.photo = photo
+                fieldsToUpdate.append('photo')
             if rating != review.rating:
                 review.rating = rating
                 fieldsToUpdate.append('rating')
+            if text != review.text:
+                review.text = text
+                fieldsToUpdate.append('text')
 
             review.save(update_fields=fieldsToUpdate)
             return Response("Review updated", status.HTTP_200_OK)

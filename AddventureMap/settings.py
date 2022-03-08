@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'LoginAPI.apps.LoginAPIConfig',
     'ReviewAPI.apps.ReviewAPIConfig',
     'AdminAPI.apps.AdminAPIConfig',
+    'PostAPI.apps.PostAPIConfig',
     'drf_multiple_model',
     'rest_framework'
 ]

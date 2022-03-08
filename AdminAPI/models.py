@@ -1,5 +1,4 @@
 from django.db import models
-from LoginAPI.models import User
 from django.core.validators import MaxValueValidator
 
 class Location(models.Model):
@@ -24,7 +23,7 @@ class Activity(models.Model):
     start_longitude = models.DecimalField(max_digits=9, decimal_places=6, default=0.0)   
     finish_latitude = models.DecimalField(max_digits=12, decimal_places=6, default=0.0)
     finish_longitude = models.DecimalField(max_digits=9, decimal_places=6, default=0.0)   
-    location = models.ForeignKey(Location, on_delete=models.CASCADE)
+    location = models.ForeignKey(Location, related_name='activity_location', on_delete=models.CASCADE)
     
 class Route(models.Model):
     discription = models.CharField(max_length=300)
@@ -32,12 +31,4 @@ class Route(models.Model):
     grade = models.CharField(max_length=16)
     photo = models.ImageField(upload_to='Route_Images')
     
-class Post(models.Model):
-    activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
-    location = models.ForeignKey(Location, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    photo = models.ImageField(upload_to='Post_Images')
-    created = models.DateTimeField(auto_now_add=True, editable=False)
-    updated = models.DateTimeField(auto_now=True, editable=False)
-    likes = models.IntegerField(default=0)
-    text = models.CharField(max_length=300, default='')
+

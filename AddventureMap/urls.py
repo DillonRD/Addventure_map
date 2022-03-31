@@ -19,6 +19,8 @@ from django.urls import path, include
 urlpatterns = [
     path('admin2/', admin.site.urls),
     path('admin/', include('AdminAPI.urls')),
+    path('user/', include('UserAPI.urls')),
+    path('verify/', include('VerifiedAPI.urls')),
     path('login/', include('LoginAPI.urls')),
     path('adventure-map/review/', include('ReviewAPI.urls')),
     path('post/', include('PostAPI.urls'))

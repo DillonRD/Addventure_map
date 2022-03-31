@@ -9,8 +9,10 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-
+import os
+import smtplib
 from pathlib import Path
+import dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,6 +43,8 @@ INSTALLED_APPS = [
     'ReviewAPI.apps.ReviewAPIConfig',
     'AdminAPI.apps.AdminAPIConfig',
     'PostAPI.apps.PostAPIConfig',
+    'VerifiedAPI.apps.VerifiedAPIConfig',
+    'UserAPI.apps.UserAPIConfig',
     'drf_multiple_model',
     'rest_framework'
 ]
@@ -128,3 +132,22 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# EMAIL CONFIG
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_FROM_USER= os.environ.get('EMAIL_FROM_USER')
+# EMAIL_HOST = os.environ.get('EMAIL_HOST')
+# EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_FROM_USER= 'addventuremaps@gmail.com'
+EMAIL_HOST = 'smtp.gmail.com'
+#EMAIL_HOST.starttls()
+EMAIL_HOST_USER = 'addventuremaps@gmail.com'
+EMAIL_HOST_PASSWORD = 'Adventure1738'
+#EMAIL_HOST.login(EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587

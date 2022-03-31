@@ -34,7 +34,7 @@ class DeleteUserView(APIView):
         if serializer.is_valid():
             username = serializer.data.get('username')
             user = User.objects.get(username=username)
-            User.objects.filter(id=request.session.get('user_id'))
+            # User.objects.filter(id=request.session.get('user_id'))
             user.delete()
             return Response("User deleted", status.HTTP_200_OK)
 
@@ -81,7 +81,7 @@ class LoginUserView(APIView):
             if queryset.exists():
                 if bcrypt.checkpw(password.encode('utf-8'), queryset[0].password.encode('utf-8')):
 
-                    # if login is correct create a session token
+                    # if login is correct create a session
                     if self.request.session.get('session_token') is None:
                         self.request.session.create()
 
@@ -122,11 +122,16 @@ class UpdateUserView(APIView):
             dateOfBirth = serializer.data.get('dateOfBirth')
             phone = serializer.data.get('phone')
             email = serializer.data.get('email')
+            address = serializer.data.get('address')
+            city = serializer.data.get('city')
+            zipcode = serializer.data.get('zipcode')
+            latitude = serializer.data.get('latitude')
+            longitude = serializer.data.get('longitude')
 
-            # we are going to have a submit form button and a skip button, if submit is clicked every field must be
-            # filled, when updating info current info would be fetched and shown to screen
+            # after creating username and password more information is asked for in the next page
+            # id and isAdmin cannot be updated by user
             # user has to fill out this if they want the cool features
-            # validate the fields'
+            # validate the fields
 
             queryset = User.objects.filter(id=request.session.get('user_id'))
             user = queryset[0]
@@ -155,6 +160,21 @@ class UpdateUserView(APIView):
             if email != user.email:
                 user.email = email
                 fieldsToUpdate.append('email')
+            if address != user.address:
+                user.address = address
+                fieldsToUpdate.append('address')
+            if city != user.city:
+                user.city = city
+                fieldsToUpdate.append('city')
+            if zipcode != user.zipcode:
+                user.zipcode = zipcode
+                fieldsToUpdate.append('zipcode')
+            if latitude != user.latitude:
+                user.latitude = latitude
+                fieldsToUpdate.append('latitude')
+            if longitude != user.longitude:
+                user.longitude = longitude
+                fieldsToUpdate.append('longitude')
 
             user.save(update_fields=fieldsToUpdate)
             return Response("Successfully Updated", status.HTTP_200_OK)

@@ -11,13 +11,7 @@ class GetUserSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'password', 'firstname', 'lastname', 'dateOfBirth', 'phone', 'email', 'isAdmin')
         depth = 1
         
-class GetAccountSerializer(serializers.ModelSerializer):
-    user_post = GetPostSerializer(many=True, read_only=True,)
-    user_review = FetchReviewSerializer(many=True, read_only=True,)
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'password', 'firstname', 'lastname', 'dateOfBirth', 'phone', 'email', 'isAdmin', 'user_post', 'user_review')
-        depth = 1
+
 
 class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:

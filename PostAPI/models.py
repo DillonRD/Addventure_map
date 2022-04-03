@@ -1,6 +1,7 @@
 from django.db import models
 from LoginAPI.models import User
-from AdminAPI.models import Activity, Location
+from ActivityAPI.models import Activity
+from LocationAPI.models import Location
 
 
 class Post(models.Model):
@@ -12,3 +13,9 @@ class Post(models.Model):
     updated = models.DateTimeField(auto_now=True, editable=False)
     likes = models.IntegerField(default=0)
     text = models.CharField(max_length=300, default='')
+
+class Route(models.Model):
+    discription = models.CharField(max_length=300)
+    activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
+    grade = models.CharField(max_length=16)
+    photo = models.ImageField(upload_to='Route_Images')

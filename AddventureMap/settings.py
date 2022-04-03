@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 import smtplib
 from pathlib import Path
-import dotenv
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,10 +41,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'LoginAPI.apps.LoginAPIConfig',
     'ReviewAPI.apps.ReviewAPIConfig',
-    'AdminAPI.apps.AdminAPIConfig',
     'PostAPI.apps.PostAPIConfig',
     'VerifiedAPI.apps.VerifiedAPIConfig',
     'UserAPI.apps.UserAPIConfig',
+    'LocationAPI.apps.LocationAPIConfig',
+    'ActivityAPI.apps.ActivityAPIConfig',
     'drf_multiple_model',
     'rest_framework'
 ]
@@ -133,6 +134,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+load_dotenv()
 
 # EMAIL CONFIG
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

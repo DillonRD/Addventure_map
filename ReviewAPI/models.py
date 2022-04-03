@@ -1,6 +1,7 @@
 from django.db import models
 from LoginAPI.models import User
-from AdminAPI.models import Activity, Location
+from ActivityAPI.models import Activity
+from LocationAPI.models import Location
 
 
 class Review(models.Model):

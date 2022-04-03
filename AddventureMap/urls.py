@@ -17,11 +17,12 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('admin2/', admin.site.urls),
-    path('admin/', include('AdminAPI.urls')),
+    path('admin/', admin.site.urls),
     path('user/', include('UserAPI.urls')),
     path('verify/', include('VerifiedAPI.urls')),
-    path('login/', include('LoginAPI.urls')),
-    path('adventure-map/review/', include('ReviewAPI.urls')),
-    path('post/', include('PostAPI.urls'))
+    path('', include('LoginAPI.urls')),
+    path('review/', include('ReviewAPI.urls')),
+    path('post/', include('PostAPI.urls')),
+    path('location/', include('LocationAPI.urls')),
+    path('activity/', include('ActivityAPI.urls'))
 ]

@@ -3,7 +3,7 @@ import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
 import Nav from "./components/Nav";
-import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {BrowserRouter, Route, Routes, useLocation} from "react-router-dom";
 import {useEffect, useState} from "react";
 import UpdateUser from "./pages/UpdateUser";
 
@@ -26,9 +26,13 @@ function App() {
 
     // catch the errors and show a error and redirect to the same page to try again
     // figure out how to get the change password working
+    
+    
 
     return (
+        
         <div className="App">
+            
             <BrowserRouter>
                 <Nav id={id} setId={setId}/>
 

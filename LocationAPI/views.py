@@ -1,9 +1,10 @@
 from rest_framework import status
-from .serializers import LocationSerializer, FetchLocationSerializer
+from .serializers import LocationSerializer, FetchLocationSerializer, FetchLocationsSerializer
 from .models import Location
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
+from rest_framework.exceptions import AuthenticationFailed
+import jwt, datetime
 
 # Create your views here.
 
@@ -11,8 +12,6 @@ class FetchLocationView(APIView):
     serializer_class = LocationSerializer
 
     def get(self, request, location_id):
-        #if self.request.session.get('session_token') is None:
-            #return Response("Error: No session token", status.HTTP_401_UNAUTHORIZED)
 
         try:
             location = Location.objects.get(id=location_id)
@@ -22,12 +21,29 @@ class FetchLocationView(APIView):
         return Response(FetchLocationSerializer(location).data, status.HTTP_200_OK)
 
 
+class FetchLocationsView(APIView):
+    serializer_class = LocationSerializer
+    def get(self, request):
+        
+        #print(self.request.session.get('user_id'))
+        queryset = Location.objects.all()
+        
+        location = FetchLocationsSerializer(queryset, many=True).data
+        return Response(location, status.HTTP_200_OK)
+    
+
 class CreateLocationView(APIView):
     serializer_class = LocationSerializer
 
     def post(self, request):
-        #if self.request.session.get('session_token') is None:
-            #return Response("Error: No session token", status.HTTP_401_UNAUTHORIZED)
+        token = request.COOKIES.get('JWT')
+        if not token:
+            raise AuthenticationFailed('Unauthenticated!')
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Unauthenticated!')
 
         serializer = self.serializer_class(data=request.data)
 

@@ -1,5 +1,5 @@
 from rest_framework import status
-from .serializers import LocationSerializer, FetchLocationSerializer, FetchLocationsSerializer
+from .serializers import LocationSerializer, FetchLocationSerializer, FetchCordsSerializer, FetchAllSerializer
 from .models import Location
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -7,6 +7,15 @@ from rest_framework.exceptions import AuthenticationFailed
 import jwt, datetime
 
 # Create your views here.
+class FetchAllView(APIView):
+    serializer_class = LocationSerializer
+    def get(self, request):
+        
+        #print(self.request.session.get('user_id'))
+        queryset = Location.objects.all()
+        
+        location = FetchAllSerializer(queryset, many=True).data
+        return Response(location, status.HTTP_200_OK)
 
 class FetchLocationView(APIView):
     serializer_class = LocationSerializer
@@ -21,14 +30,14 @@ class FetchLocationView(APIView):
         return Response(FetchLocationSerializer(location).data, status.HTTP_200_OK)
 
 
-class FetchLocationsView(APIView):
+class FetchCordsView(APIView):
     serializer_class = LocationSerializer
     def get(self, request):
         
         #print(self.request.session.get('user_id'))
         queryset = Location.objects.all()
         
-        location = FetchLocationsSerializer(queryset, many=True).data
+        location = FetchCordsSerializer(queryset, many=True).data
         return Response(location, status.HTTP_200_OK)
     
 

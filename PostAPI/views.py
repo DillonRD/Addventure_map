@@ -44,7 +44,7 @@ class CreatePostView(APIView):
             location = self.request.session.get('location')
             user = self.request.session.get('user')
             photo = serializer.data.get('photo')
-            likes = serializer.data.get('likes')
+            likes = 0
             text = serializer.data.get('text')
 
             post = Post(activity=activity, location=location, user=user, photo=photo, likes=likes, text=text)

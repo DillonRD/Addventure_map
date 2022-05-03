@@ -1,7 +1,8 @@
 import React, {useEffect, useState, Component} from 'react';
-import { GoogleMap, LoadScript, useJsApiLoader } from '@react-google-maps/api';
+import {Navigate} from "react-router-dom";
+import { GoogleMap, LoadScript, useLoadScript, Marker, InfoWindow } from '@react-google-maps/api';
 import mapStyles from '../components/mapStyles.js';
-import { Marker } from '@react-google-maps/api';
+
 
 
 const containerStyle = {
@@ -25,37 +26,144 @@ maxZoom: 18,
 };
 
 
+/*
+  lat 29.62218740747097, lng -98.57229513414572 
+  lat 29.538541822605993, lng -98.75131433427904
+  lat 29.56083169547403, lng -98.63034797249237
+*/
+
+function post(selected){
+  
+  var p = document.getElementById('post')
+  p.innerHTML="";
+  
+  for(var i =0; i < (selected.location_post).length; i++){
+    var temp = "<img src'"+selected.location_post[i].photo+"'><br><p>"+selected.location_post[i].likes+"<br>"+selected.location_post[i].text+"</p>"
+    p.innerHTML.concat('<br>', temp)
+  }
+}
+
+function review(selected){
+  
+  var r = document.getElementById('review')
+  r.innerHTML="";
+  
+  for(var i =0; i < (selected.location_review).length; i++){
+    var temp = "<img src'"+selected.location_review[i].photo+"'><br><p>"+selected.location_post[i].likes+"<br>"+selected.location_post[i].text+"</p>"
+    r.innerHTML.concat('<br>', temp)
+  }
+}
+
+
+const fetchDirections = (selected) =>{
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+
+      },
+      () => {
+        alert("Error Please allow location")
+      }
+    );
+  } else {
+    // Browser doesn't support Geolocation
+    alert("Error Please allow location")
+  }
+}
 
 const Home = (props) => {
 
-    const {isLoaded, loadError} = useJsApiLoader({
-        googleMapsApiKey:process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-        libraries,
-      });
-    
-      const [markers, setMarkers] = React.useState([]);
-      
-      
+  const [content, setContent] = useState([]);
 
-      if (loadError) return "Error loading maps";
-      if(!isLoaded) return "Loadin Maps";
-      
-      return (        
-        <GoogleMap mapContainerStyle={containerStyle}
-        zoom={10}
-        center={center}
-        options={options}
-        onClick={(event)=>{
-            setMarkers(current => [
-              ...current,
-              {
-              lat:event.latLng.lat(),
-              lng:event.latLng.lng(),
-            },
-          ]);
+  const [selected, setSelected] = useState(null);
+
+  const mapRef = React.useRef();
+  const onMapLoad = React.useCallback((map) =>{
+    mapRef.current = map;
+  }, []);
+
+  const {isLoaded, loadError} = useLoadScript({
+      googleMapsApiKey:process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+      libraries,
+    });
+    
+    useEffect(() => {
+      (
+          async () => {
+              const response = await fetch('http://127.0.0.1:8000/location/all', {
+                  headers: {'Content-Type': 'application/json'},
+                  credentials: 'include',
+              });
+              
+              setContent(await response.json());
+              
+          }
+      )();
+    }, []);
+    
+
+    if (loadError) return "Error loading maps";
+    if(!isLoaded) return "Loadin Maps";
+    
+    console.log(content)
+    
+    return (     
+      <div> 
+      <GoogleMap 
+      mapContainerStyle={containerStyle}
+      zoom={10}
+      center={center}
+      options={options}
+      onLoad={onMapLoad}
+      >
+      {content.map(content => (
+        <Marker
+        key={parseInt(content.id)}
+        position={{lat: parseFloat(content.lat), lng: parseFloat(content.lng)}}
+        onClick={() => {
+          setSelected(content);
+          fetchDirections(content);
         }}
-        ></GoogleMap>
-      )
+        />
+      ))}
+
+      {selected ? (
+      <InfoWindow
+        position={{lat: parseFloat(selected.lat), lng: parseFloat(selected.lng)}}
+        onCloseClick={()=> {
+          setSelected(null);
+        }}
+        >
+        <div >
+          <p className="p-2 bold lead text-center text-break text-wrap" style={{width: "15rem"}}>
+            <b>{selected.name}</b>
+          </p>
+          <p className="p-2 bold lead text-center text-break text-wrap" style={{width: "15rem"}}>
+            {selected.description}
+          </p>
+          <div className="p-2 d-grid gap-2">
+            <button className="btn btn-success" type="button" >Directions</button>
+          </div>
+          <div className="p-2 btn-group m-5" role="group" aria-label="Basic radio toggle button group">
+            <input type="radio" className="btn-check" name="btnradio" id="btnradio1" autoComplete="off" ></input>
+            <label className="btn btn-outline-success" htmlFor="btnradio1" >Post</label>
+            
+            <input type="radio" className="btn-check" name="btnradio" id="btnradio2" autoComplete="off" ></input>
+            <label className="btn btn-outline-success" htmlFor="btnradio2">Reviews</label>
+          </div>
+          <div id="post">
+
+          </div>
+        </div>
+      </InfoWindow>) : null}
+      </GoogleMap>
+      </div>
+      
+    )
 };
 
 export default Home;

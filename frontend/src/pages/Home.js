@@ -1,6 +1,6 @@
 import React, {useEffect, useState, Component} from 'react';
 import {Navigate} from "react-router-dom";
-import { GoogleMap, LoadScript, useLoadScript, Marker, InfoWindow } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, useLoadScript, Marker, InfoWindow, DirectionsRenderer } from '@react-google-maps/api';
 import mapStyles from '../components/mapStyles.js';
 
 
@@ -55,31 +55,14 @@ function review(selected){
 }
 
 
-const fetchDirections = (selected) =>{
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const pos = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        };
 
-      },
-      () => {
-        alert("Error Please allow location")
-      }
-    );
-  } else {
-    // Browser doesn't support Geolocation
-    alert("Error Please allow location")
-  }
-}
 
 const Home = (props) => {
 
   const [content, setContent] = useState([]);
-
+  const [loc, setPos]= useState();
   const [selected, setSelected] = useState(null);
+  const [directions, setDirections] = useState();
 
   const mapRef = React.useRef();
   const onMapLoad = React.useCallback((map) =>{
@@ -91,21 +74,60 @@ const Home = (props) => {
       libraries,
     });
     
-    useEffect(() => {
-      (
-          async () => {
-              const response = await fetch('http://127.0.0.1:8000/location/all', {
-                  headers: {'Content-Type': 'application/json'},
-                  credentials: 'include',
-              });
-              
-              setContent(await response.json());
-              
-          }
-      )();
+  useEffect(() => {
+    (
+        async () => {
+            const response = await fetch('http://127.0.0.1:8000/location/all', {
+                headers: {'Content-Type': 'application/json'},
+                credentials: 'include',
+            });
+            
+            setContent(await response.json());
+            
+        }
+    )();
     }, []);
     
-
+    const fetchLoc = () =>{
+      
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            
+            const pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            };
+            setPos(pos)
+          },
+          () => {
+            alert("Error Please allow location refresh and try again")
+          }
+        );
+      } else {
+        // Browser doesn't support Geolocation
+        alert("Error Please allow location refresh and try again")
+      }
+      
+    }
+    const fetchDirections = event =>{
+      
+      const service = new window.google.maps.DirectionsService();
+        service.route({
+          origin: loc,
+          destination: {lat: parseFloat(selected.lat), lng: parseFloat(selected.lng)},
+          travelMode : window.google.maps.TravelMode.DRIVING
+        },
+        (result, status) =>{
+          if(status==="OK" && result){
+            setDirections(result);
+            return false;
+          }
+          return false;
+        }
+        
+        );
+    }
     if (loadError) return "Error loading maps";
     if(!isLoaded) return "Loadin Maps";
     
@@ -126,16 +148,17 @@ const Home = (props) => {
         position={{lat: parseFloat(content.lat), lng: parseFloat(content.lng)}}
         onClick={() => {
           setSelected(content);
-          fetchDirections(content);
+          fetchLoc()
         }}
         />
       ))}
-
+      {directions && <DirectionsRenderer directions={directions}/>}
       {selected ? (
       <InfoWindow
         position={{lat: parseFloat(selected.lat), lng: parseFloat(selected.lng)}}
         onCloseClick={()=> {
           setSelected(null);
+          setDirections(null);
         }}
         >
         <div >
@@ -146,7 +169,7 @@ const Home = (props) => {
             {selected.description}
           </p>
           <div className="p-2 d-grid gap-2">
-            <button className="btn btn-success" type="button" >Directions</button>
+            <button className="btn btn-success" type="button" onClick={fetchDirections}>Directions</button>
           </div>
           <div className="p-2 btn-group m-5" role="group" aria-label="Basic radio toggle button group">
             <input type="radio" className="btn-check" name="btnradio" id="btnradio1" autoComplete="off" ></input>

@@ -204,12 +204,12 @@ const Home = (props) => {
             <label className="btn btn-outline-success" htmlFor="btnradio1" >Post</label>
             {posts.map(post => (
               <label>{post.text}, Likes: {post.likes}</label>
-            )}
+            ))}
             <input type="radio" className="btn-check" name="btnradio" id="btnradio2" autoComplete="off" ></input>
             <label className="btn btn-outline-success" htmlFor="btnradio2">Reviews</label>
             {reviews.map(review => (
               <label>{review.text}, Rating: {review.rating}</label>
-            )}
+            ))}
           </div>
           <div id="post">
 

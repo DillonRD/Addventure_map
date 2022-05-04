@@ -45,28 +45,28 @@ class CreateLocationView(APIView):
     serializer_class = LocationSerializer
 
     def post(self, request):
-        token = request.COOKIES.get('JWT')
-        if not token:
-            raise AuthenticationFailed('Unauthenticated!')
+        # token = request.COOKIES.get('JWT')
+        # if not token:
+        #     raise AuthenticationFailed('Unauthenticated!')
 
-        try:
-            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed('Unauthenticated!')
+        # try:
+        #     payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        # except jwt.ExpiredSignatureError:
+        #     raise AuthenticationFailed('Unauthenticated!')
 
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
             description = serializer.data.get('description')
             name = serializer.data.get('name')
-            latitude = serializer.data.get('latitude')
-            longitude = serializer.data.get('longitude')
+            latitude = serializer.data.get('lat')
+            longitude = serializer.data.get('lng')
             address = serializer.data.get('address')
             city = serializer.data.get('city')
             zipcode = serializer.data.get('zipcode')
             altitude = serializer.data.get('altitude')
 
-            location = Location(description=description, name=name, latitude=latitude, longitude=longitude, address=address, city=city, zipcode=zipcode, altitude=altitude)
+            location = Location(description=description, name=name, lat=latitude, lng=longitude, address=address, city=city, zipcode=zipcode, altitude=altitude)
             location.save()
             return Response(FetchLocationSerializer(location).data, status.HTTP_201_CREATED)
 

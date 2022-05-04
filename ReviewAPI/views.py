@@ -1,9 +1,13 @@
 from rest_framework import status
 from .serializers import ReviewSerializer, FetchReviewSerializer
 from .models import Review
+from LocationAPI.models import Location
+from LoginAPI.models import User
+from ActivityAPI.models import Activity
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
+from rest_framework.exceptions import AuthenticationFailed
+import jwt, datetime
 
 # Create your views here.
 
@@ -25,18 +29,28 @@ class CreateReviewView(APIView):
     def post(self, request):
         #if self.request.session.get('session_token') is None:
             #return Response("Error: No session token", status.HTTP_401_UNAUTHORIZED)
+        token = request.COOKIES.get('JWT')
+        if not token:
+            raise AuthenticationFailed('Unauthenticated!')
 
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Unauthenticated!')
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
-            activity = self.request.session.get('activity')
-            location = self.request.session.get('location')
-            user = self.request.session.get('user')
+            activity = serializer.data.get('activity')
+            act_temp = Activity.objects.get(id=activity)
+            location = serializer.data.get('location')
+            loc_temp = Location.objects.get(id=location)
+            user = User.objects.get(id=payload['id'])
             photo = serializer.data.get('photo')
+            print(str(photo))
             rating = serializer.data.get('rating')
             text = serializer.data.get('text')
 
-            review = Review(activity=activity, location=location, user=user, photo=photo, rating=rating, text=text)
+            review = Review(activity=act_temp, location=loc_temp, user=user, photo=photo, rating=rating, text=text)
             review.save()
             return Response(FetchReviewSerializer(review).data, status.HTTP_201_CREATED)
 

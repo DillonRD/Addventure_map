@@ -17,4 +17,4 @@ class UserPostSerializer(serializers.ModelSerializer):
 class CreatePostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ('photo', 'text')
+        fields = ('activity', 'location', 'user', 'photo', 'created', 'updated', 'likes', 'text')

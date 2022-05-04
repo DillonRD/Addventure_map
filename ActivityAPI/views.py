@@ -1,6 +1,7 @@
 from rest_framework import status
 from .serializers import ActivitySerializer, FetchActivitySerializer
 from .models import Activity
+from LocationAPI.models import Location
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -42,11 +43,11 @@ class CreateActivityView(APIView):
             start_longitude = serializer.data.get('start_longitude')
             finish_latitude = serializer.data.get('finish_latitude')
             finish_longitude = serializer.data.get('finish_longitude')
-            location = self.request.session.get('location')
-
+            location = serializer.data.get('location')
+            temp = Location.objects.get(id=location)
             activity = Activity(description=description, name=name, approach=approach, altitude=altitude, height=height
                                 , difficulty=difficulty, start_latitude=start_latitude, start_longitude=start_longitude
-                                , finish_latitude=finish_latitude, finish_longitude=finish_longitude, location=location)
+                                , finish_latitude=finish_latitude, finish_longitude=finish_longitude, location=temp)
             activity.save()
             return Response(FetchActivitySerializer(activity).data, status.HTTP_201_CREATED)
 

@@ -6,7 +6,7 @@ class ActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity
         fields = ('description', 'name', 'approach', 'altitude', 'height', 'difficulty', 'start_latitude'
-                  , 'start_longitude', 'finish_latitude', 'finish_longitude')
+                  , 'start_longitude', 'finish_latitude', 'finish_longitude', 'location')
 
 
 class FetchActivitySerializer(serializers.ModelSerializer):

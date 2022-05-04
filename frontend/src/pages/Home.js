@@ -54,7 +54,33 @@ function review(selected){
   }
 }
 
+function getReviews(user) {
 
+    try {
+        const response = await fetch('http://127.0.0.1:8000/adventure-map/review/' + user,{
+            headers: {'Content-Type': 'application/json'},
+            credentials: 'include'
+        });
+        return await response.json();
+    } catch(error) {
+        return [];
+    }
+
+}
+
+function getPosts(user) {
+
+    try {
+        const response = await fetch('http://127.0.0.1:8000/adventure-map/post/' + user,{
+            headers: {'Content-Type': 'application/json'},
+            credentials: 'include'
+        });
+        return await response.json();
+    } catch(error) {
+        return [];
+    }
+
+}
 
 
 const Home = (props) => {

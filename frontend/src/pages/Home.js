@@ -61,7 +61,7 @@ function getReviews(user) {
             headers: {'Content-Type': 'application/json'},
             credentials: 'include'
         });
-        return await response.json();
+        setReviews(await response.json());
     } catch(error) {
         return [];
     }
@@ -75,7 +75,7 @@ function getPosts(user) {
             headers: {'Content-Type': 'application/json'},
             credentials: 'include'
         });
-        return await response.json();
+        setPosts(await response.json());
     } catch(error) {
         return [];
     }
@@ -89,6 +89,8 @@ const Home = (props) => {
   const [loc, setPos]= useState();
   const [selected, setSelected] = useState(null);
   const [directions, setDirections] = useState();
+  const [reviews, setReviews] = useState([]);
+  const [posts, setPosts] = useState([]);
 
   const mapRef = React.useRef();
   const onMapLoad = React.useCallback((map) =>{
@@ -200,9 +202,14 @@ const Home = (props) => {
           <div className="p-2 btn-group m-5" role="group" aria-label="Basic radio toggle button group">
             <input type="radio" className="btn-check" name="btnradio" id="btnradio1" autoComplete="off" ></input>
             <label className="btn btn-outline-success" htmlFor="btnradio1" >Post</label>
-            
+            {posts.map(post => (
+              <label>{post.text}, Likes: {post.likes}</label>
+            )}
             <input type="radio" className="btn-check" name="btnradio" id="btnradio2" autoComplete="off" ></input>
             <label className="btn btn-outline-success" htmlFor="btnradio2">Reviews</label>
+            {reviews.map(review => (
+              <label>{review.text}, Rating: {review.rating}</label>
+            )}
           </div>
           <div id="post">
 
